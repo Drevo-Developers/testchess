@@ -17,7 +17,12 @@ public class MouseControl : MonoBehaviour
             {
                 if (hit.transform.name != "Board")
                 {
-                    if (_renderer != null)
+                    if (_renderer != null && gameObject.tag == "white")
+                    {
+                    // Возвращаем исходный цвет, если другой объект был выбран
+                        _renderer.material.color = Color.white;
+                    }
+                    if (_renderer != null && gameObject.tag == "black")
                     {
                     // Возвращаем исходный цвет, если другой объект был выбран
                         _renderer.material.color = Color.black;
