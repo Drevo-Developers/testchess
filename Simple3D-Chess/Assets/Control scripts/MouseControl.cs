@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MouseControl : MonoBehaviour
@@ -14,21 +13,22 @@ public class MouseControl : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit) && hit.transform.tag != "env")
+            if (Physics.Raycast(ray, out RaycastHit hit) && hit.transform.tag != "env")
             {
                 if (_renderer != null)
-                {
                     _renderer.material.color = _tag == "white" ? Color.white : Color.black;
-                }
 
                 _renderer = hit.transform.GetComponent<Renderer>();
                 _tag = _renderer.gameObject.tag;
 
-                if (_renderer != null)
+                _renderer.material.color = selectedColor;
+                _renderer.transform.Translate(0, _tag == "white" ? 1 : -1, 0);
+
+                Collider[] colliders = Physics.OverlapSphere(_renderer.transform.position, 0.1f);
+                foreach (var collider in colliders)
                 {
-                    _renderer.material.color = selectedColor;
-                    _renderer.transform.Translate(0, _tag == "white" ? 1 : -1, 0);
+                    if (collider != _renderer)
+                        Destroy(collider.gameObject);
                 }
             }
         }
