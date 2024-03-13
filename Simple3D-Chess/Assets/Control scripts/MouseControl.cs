@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MouseControl : MonoBehaviour
 {
     private Renderer _renderer;
+    private string _tag;
     public Color selectedColor = Color.red;
 
     void Update()
@@ -13,28 +15,20 @@ public class MouseControl : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit) && hit.transform.tag != "env")
             {
-                if (hit.transform.name != "Board")
+                if (_renderer != null)
                 {
-                    if (_renderer != null && gameObject.tag == "white")
-                    {
-                    // Возвращаем исходный цвет, если другой объект был выбран
-                        _renderer.material.color = Color.white;
-                    }
-                    if (_renderer != null && gameObject.tag == "black")
-                    {
-                    // Возвращаем исходный цвет, если другой объект был выбран
-                        _renderer.material.color = Color.black;
-                    }
+                    _renderer.material.color = _tag == "white" ? Color.white : Color.black;
+                }
 
-                    _renderer = hit.transform.GetComponent<Renderer>();
+                _renderer = hit.transform.GetComponent<Renderer>();
+                _tag = _renderer.gameObject.tag;
 
-                    if (_renderer != null)
-                    {
-                        // Изменяем цвет выбранного объекта
-                        _renderer.material.color = selectedColor;
-                    }
+                if (_renderer != null)
+                {
+                    _renderer.material.color = selectedColor;
+                    _renderer.transform.Translate(0, _tag == "white" ? 1 : -1, 0);
                 }
             }
         }

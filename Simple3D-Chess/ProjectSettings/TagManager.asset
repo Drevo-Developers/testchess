@@ -6,6 +6,7 @@ TagManager:
   tags:
   - black
   - white
+  - env
   layers:
   - Default
   - TransparentFX
